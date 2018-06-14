@@ -1,5 +1,5 @@
 # tdd_django
-TDD with Django
+Test-Driven Development with Django
 
 
 chmod +x geckodriver
