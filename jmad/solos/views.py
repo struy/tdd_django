@@ -30,4 +30,4 @@ def index(request):
 
 
 class SoloDetailView(DetailView):
-    pass
+    model = Solo
