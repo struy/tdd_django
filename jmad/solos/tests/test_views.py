@@ -2,8 +2,19 @@ from django.test import TestCase, RequestFactory
 from solos.views import index
 from django.db.models.query import QuerySet
 from solos.models import Solo
+from solos.views import index, SoloDetailView
 
-class IndexViewTestCase(TestCase):
+class SolosBaseTestCase(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.drum_solo = Solo.objects.create(instrument='drums', artist='Rich',track='Bugle Call Rag')
+        cls.sax_solo = Solo.objects.create(instrument='saxophone',artist='Coltrane', track='Mr. PC')
+
+
+class IndexViewTestCase(SolosBaseTestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
@@ -45,6 +56,25 @@ class IndexViewTestCase(TestCase):
 
 
 
+class SoloViewTestCase(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
 
-
-      
+    def test_basic(self):
+        """
+        Test that the solo view returns a 200 response, uses
+        the correct template, and has the correct context
+        """
+        request = self.factory.get('/solos/1/')
+        response = SoloDetailView.as_view()(
+            request,
+            self.drum_solo.pk
+        )
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context_data['solo'].artist,
+            'Rich'
+        )
+        with self.assertTemplateUsed('solos/solo_detail.html'):
+            response.render()
