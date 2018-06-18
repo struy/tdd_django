@@ -14,8 +14,7 @@ def index(request):
         if request.GET.get('instrument', None):
             solos_queryset = solos_queryset.filter(
                 instrument=request.GET.get(
-                    'instrument',
-                    None
+                    'instrument', None
                 )
             )
 
