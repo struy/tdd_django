@@ -101,7 +101,8 @@ class StudentTestCase(LiveServerTestCase):
 
         self.assertEqual(
             self.browser.current_url,
-            '{}/solos/2/'.format(self.live_server_url)
+            self.live_server_url +
+            '/recordings/kind-of-blue/all-blues/cannonball-adderley/'
         )       
 
         self.assertEqual(
@@ -113,12 +114,12 @@ class StudentTestCase(LiveServerTestCase):
         self.assertEqual(
             self.browser.find_element_by_css_selector(
                 '#jmad-track').text,
-            'All Blues'
+            'All Blues [2 solos]'
         )
         self.assertEqual(
             self.browser.find_element_by_css_selector(
                 '#jmad-album').text,
-            'Kind of Blue'
+            'Kind of Blue [3 tracks]'
         )
 
         # He also sees the start time and end time of the

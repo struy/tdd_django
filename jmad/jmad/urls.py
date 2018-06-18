@@ -8,5 +8,5 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', 'solos.views.index'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^solos/(?P<pk>\d+)/$', SoloDetailView.as_view()),
+    url(r'^recordings/(?P<album>[\w-]+)/(?P<track>[\w-]+)/(?P<artist>\[\w-]+)/$', SoloDetailView.as_view()),
 ]
