@@ -1,34 +1,22 @@
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from solos.models import Solo
+from albums.models import Album, Track
 
 class StudentTestCase(LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(2)
 
-        self.solo1 = Solo.objects.create(
-        instrument='saxophone',
-        artist='John Coltrane',
-        track='My Favorite Things',
-        album='My Favorite Things'
-        )
-
-        self.solo2 = Solo.objects.create(
-        instrument='saxophone',
-        artist='Cannonball Adderley',
-        track='All Blues',
-        album='Kind of Blue',
-        start_time='2:06',
-        end_time='4:01'
-        )
-
-        self.solo3 = Solo.objects.create(
-        instrument='saxophone',
-        artist='Cannonball Adderley',
-        track='Waltz for Debby',
-        album='Know What I Mean?'
-        )
+        self.album1 = Album.objects.create(name='My Favorite Things', slug='my-favorite-things')
+        self.track1 = Track.objects.create(name='My Favorite Things', slug='my-favorite-things',album=self.album1)
+        self.solo1 = Solo.objects.create(instrument='saxophone', artist='John Coltrane', track=self.track1, slug='john-coltrane')
+        self.album2 = Album.objects.create( name='Kind of Blue', slug='kind-of-blue')
+        self.track2 = Track.objects.create(name='All Blues', slug='all-blues',album=self.album2, track_number=4)
+        self.solo2 = Solo.objects.create(instrument='saxophone', artist='Cannonball Adderley',track=self.track2, start_time='4:05', end_time='6:04', slug='cannonball-adderley')
+        self.album3 = Album.objects.create(name='Know What I Mean?', slug='know-what-i-mean')
+        self.track3 = Track.objects.create(name='Waltz for Debby', slug='waltz-for-debby', album=self.album3)
+        self.solo3 = Solo.objects.create(instrument='saxophone', artist='Cannonball Adderley', track=self.track3, slug='cannonball-adderley')
 
 
     def tearDown(self):
@@ -60,14 +48,13 @@ class StudentTestCase(LiveServerTestCase):
         self.assertIsNotNone(self.browser.find_element_by_css_selector(
             'label[for="jmad-instrument"]'))
         self.assertEqual(instrument_input.get_attribute(
-            'placeholder'),'i.e. trumpet')
+            'placeholder'), 'i.e. trumpet')
         artist_input = self.browser.find_element_by_css_selector(
             'input#jmad-artist')
         self.assertIsNotNone(self.browser.find_element_by_css_selector(
             'label[for="jmad-artist"]'))
         self.assertEqual(artist_input.get_attribute(
             'placeholder'),'i.e. Davis')
-        
 
         # He types in the name of his instrument and submits
         # it.

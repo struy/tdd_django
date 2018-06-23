@@ -2,7 +2,7 @@ from django.test import TestCase, RequestFactory
 from solos.views import index
 from django.db.models.query import QuerySet
 from solos.models import Solo
-from solos.views import index, SoloDetailView
+from solos.views import index, solo_detail
 from albums.models import Album, Track
 
 class SolosBaseTestCase(TestCase):
@@ -16,7 +16,7 @@ class SolosBaseTestCase(TestCase):
             name='Bugle Call Rag', slug='bugle-call-rag',
             album=cls.no_funny_hats)
         cls.drum_solo = Solo.objects.create(
-            instrument='drums', artist='Rich',
+            instrument='drums', artist='Buddy Rich',
             track=cls.bugle_call_rag, slug='rich')
         cls.giant_steps = Album.objects.create(
             name='Giant Steps', slug='giant-steps')
@@ -77,16 +77,17 @@ class SoloViewTestCase(SolosBaseTestCase):
         Test that the solo view returns a 200 response, uses
         the correct template, and has the correct context
         """
-        request = self.factory.get('/solos/1/')
-        response = SoloDetailView.as_view()(
-            request,
-            pk=self.drum_solo.pk
-        )
+        request = self.factory.get('/solos/no-funny-hats/bugle-call-rag/buddy-rich/')
+        
+        with self.assertTemplateUsed('solos/solo_detail.html'):
+            response = solo_detail(
+                request,
+                album=self.no_funny_hats.slug,
+                track=self.bugle_call_rag.slug,
+                artist=self.drum_solo.slug
+                )
         
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context_data['solo'].artist,
-            'Rich'
-        )
-        with self.assertTemplateUsed('solos/solo_detail.html'):
-            response.render()
+        page = response.content.decode()
+        self.assertInHTML('<p id="jmad-artist">Buddy Rich</p>', page)
+        self.assertInHTML('<p id="jmad-track">Bugle Call Rag</p>', page)

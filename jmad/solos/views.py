@@ -13,9 +13,7 @@ def index(request):
 
         if request.GET.get('instrument', None):
             solos_queryset = solos_queryset.filter(
-                instrument=request.GET.get(
-                    'instrument', None
-                )
+                instrument=request.GET.get('instrument', None)
             )
 
         if request.GET.get('artist', None):
@@ -28,5 +26,10 @@ def index(request):
     return render_to_response('solos/index.html', context)
 
 
-class SoloDetailView(DetailView):
-    model = Solo
+# class SoloDetailView(DetailView):
+#     model = Solo
+
+
+def solo_detail(request, album, track, artist):
+    context = {'solo': Solo.objects.get(slug=artist, track__slug=track, track__album__slug=album)}
+    return render_to_response('solos/solo_detail.html', context)

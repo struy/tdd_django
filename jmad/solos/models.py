@@ -17,3 +17,4 @@ class Solo(models.Model):
             'track': self.track.slug,
             'artist': self.slug
         })
+        
